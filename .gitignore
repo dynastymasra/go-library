@@ -19,3 +19,35 @@
 
 # Go workspace file
 go.work
+
+
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
+
+# IntelliJ
+.idea
+*.ipr
+*.iml
+*.iws
+
+# Visual Studio Code
+.vscode
+.factorypath
+
+# OSX
+.DS_Store
+
+# Vim
+*.swp
+*.swo
+
+# Local environment
+.env
+coverage.out
+coverage.json
+
+# Logs
+logs/
