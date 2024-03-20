@@ -24,7 +24,6 @@ func ContentTypeJSON(next http.Handler) http.Handler {
 		if !strings.Contains(strings.ToLower(contentType), "application/json") {
 			messages := []map[string]any{
 				{
-					"code":    "0000-0001",
 					"message": "Content-Type is empty or not application/json",
 				},
 			}
@@ -53,7 +52,6 @@ func ContentTypeUTF8(next http.Handler) http.Handler {
 		if !strings.Contains(strings.ToLower(contentType), "charset=utf-8") {
 			messages := []map[string]any{
 				{
-					"code":    "0000-0002",
 					"message": "Content-Type is empty or not charset=utf-8",
 				},
 			}
