@@ -66,15 +66,13 @@ func FailedJSONResponse(w http.ResponseWriter, r *http.Request, status int, data
 // w: The http.ResponseWriter to write the response to.
 // r: The http.Request that we are responding to.
 // status: The HTTP status code to set in the response.
-// code: The error code to include in the response.
 // message: The error message to include in the response.
-func ErrorJSONResponse(w http.ResponseWriter, r *http.Request, status int, code string, message string) {
+func ErrorJSONResponse(w http.ResponseWriter, r *http.Request, status int, message string) {
 	w.Header().Set(middleware.RequestIDHeader, middleware.GetReqID(r.Context()))
 
 	render.Status(r, status)
 	render.JSON(w, r, map[string]any{
 		"status":  "error",
-		"code":    code,
 		"message": message,
 	})
 }
