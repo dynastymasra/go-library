@@ -30,13 +30,13 @@ type ZeroLogConfig struct {
 	FileMaxAge    int // FileMaxAge the maximum number of days to retain old log files.
 }
 
-// ConfigureZeroLog configures the global logger with the settings from the ZeroLogConfig.
-// It sets the global logging level, hostname, service name, and version.
-// If FileEnabled is true, it also sets up a file logger.
+// ConfigureZeroLog sets up the ZeroLog logger based on the provided configuration.
+// It configures the global logging level, sets up the log output destinations (console and/or file),
+// and adds contextual information such as hostname, service name, and version to each log entry.
 //
 // Parameters:
-// name: The name of the service. This will be included in every log entry.
-// version: The version of the service. This will be included in every log entry.
+// - name: The name of the service or application.
+// - version: The version of the service or application.
 func (z ZeroLogConfig) ConfigureZeroLog(name, version string) {
 	switch strings.ToLower(z.Level) {
 	case "info":
@@ -55,8 +55,6 @@ func (z ZeroLogConfig) ConfigureZeroLog(name, version string) {
 	}
 
 	var writers []io.Writer
-	writers = append(writers, zerolog.NewConsoleWriter())
-
 	if z.FileEnabled {
 		// Output is JSON.
 		writers = append(writers, &lumberjack.Logger{
@@ -65,6 +63,8 @@ func (z ZeroLogConfig) ConfigureZeroLog(name, version string) {
 			MaxAge:     z.FileMaxAge,
 			MaxBackups: z.FileMaxBackup,
 		})
+	} else {
+		writers = append(writers, zerolog.NewConsoleWriter())
 	}
 
 	mw := io.MultiWriter(writers...)

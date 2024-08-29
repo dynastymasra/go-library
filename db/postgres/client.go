@@ -33,19 +33,14 @@ type Config struct {
 	DebugEnabled                                        bool
 }
 
-// Client is a method on the Config struct that establishes a database connection using the configuration in the Config struct.
-// It first constructs the data source name (dsn) using the configuration fields.
-// Then it sets the log mode based on the LogMode field in the Config struct.
-// It then attempts to open a connection to the database using the constructed dsn and log mode.
-// If an error occurs during the connection process, it returns the error.
-// If the DebugEnabled field in the Config struct is set to true, it enables debug mode on the database connection.
-// It then retrieves the underlying sql.DB object from the gorm.DB object and sets the maximum idle and open connections.
-// Finally, it returns the established database connection and any error that occurred during the process.
+// Connect is a method on the Config struct that establishes a connection to the database.
+// It constructs the Data Source Name (DSN) using the configuration fields and opens a connection to the database.
+// The connection is established only once using singleton mechanism to ensure that the connection is not re-established multiple times.
+// If the connection is successfully established, it configures the connection pool settings and enables debug mode if specified.
 //
 // Returns:
-// - *gorm.DB: The established database connection.
-// - error: Any error that occurred during the process.
-func (c Config) Client() (*gorm.DB, error) {
+// - error: Any error that occurred during the connection process.
+func (c Config) Connect() error {
 	var err error
 	once.Do(func() {
 		dsn := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%d %s",
@@ -83,7 +78,7 @@ func (c Config) Client() (*gorm.DB, error) {
 		sqlDB.SetMaxIdleConns(c.MaxIdleConn)
 		sqlDB.SetMaxOpenConns(c.MaxOpenConn)
 	})
-	return db, err
+	return err
 }
 
 // Ping is a method on the Config struct that checks the database connection by sending a ping.
@@ -128,18 +123,14 @@ func (c Config) DB() *gorm.DB {
 }
 
 // Reset is a method on the Config struct that resets the database connection.
-// It first resets the once.Do function to allow the Client method to be called again.
-// Then it calls the Client method to establish a new database connection.
-// If an error occurs during this process, it returns the error.
-// If the process is successful, it returns nil.
+// It first resets the instance to allow the Connect method to be called again.
+// Then it calls the Connect method to re-establish the database connection.
+// If an error occurs during the connection process, it returns the error.
+// If the connection is successfully re-established, it returns nil.
+//
+// Returns:
+// - error: Any error that occurred during the process.
 func (c Config) Reset() error {
-	var err error
-
 	once.Reset()
-	db, err = c.Client()
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return c.Connect()
 }
