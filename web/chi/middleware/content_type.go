@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/dynastymasra/go-library/web/chi"
+	"github.com/dynastymasra/go-library/web/json"
 )
 
 // ContentTypeJSON is a middleware function that checks if the request's content type is application/json.
@@ -27,7 +27,7 @@ func ContentTypeJSON(next http.Handler) http.Handler {
 					"message": "Content-Type is empty or not application/json",
 				},
 			}
-			chi.FailedJSONResponse(w, r, http.StatusUnsupportedMediaType, messages)
+			json.FailedResponse(w, r, http.StatusUnsupportedMediaType, messages)
 			return
 		}
 		next.ServeHTTP(w, r)
@@ -55,7 +55,7 @@ func ContentTypeUTF8(next http.Handler) http.Handler {
 					"message": "Content-Type is empty or not charset=utf-8",
 				},
 			}
-			chi.FailedJSONResponse(w, r, http.StatusUnsupportedMediaType, messages)
+			json.FailedResponse(w, r, http.StatusUnsupportedMediaType, messages)
 			return
 		}
 		next.ServeHTTP(w, r)
