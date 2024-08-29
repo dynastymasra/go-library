@@ -7,9 +7,9 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-)
 
-const requestID = "requestId"
+	"github.com/dynastymasra/go-library/web"
+)
 
 // LogRequestWithZerolog is a middleware function that logs HTTP requests and responses.
 // It logs the start and end time of the request, the duration, the request details (address, path, method, headers, queries),
@@ -32,10 +32,10 @@ func LogRequestWithZerolog(next http.Handler) http.Handler {
 				Int("byte", ww.BytesWritten()).Interface("headers", ww.Header())
 
 			if ww.Status() >= http.StatusBadRequest {
-				log.Warn().Str(requestID, middleware.GetReqID(r.Context())).Dict("span", span).
+				log.Warn().Str(web.RequestID, middleware.GetReqID(r.Context())).Dict("span", span).
 					Dict("request", request).Dict("response", response).Msg("HTTP message logging")
 			} else {
-				log.Info().Str(requestID, middleware.GetReqID(r.Context())).Dict("span", span).
+				log.Info().Str(web.RequestID, middleware.GetReqID(r.Context())).Dict("span", span).
 					Dict("request", request).Dict("response", response).Msg("HTTP message logging")
 			}
 		}()
