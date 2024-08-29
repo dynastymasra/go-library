@@ -71,6 +71,7 @@ func (z ZeroLogConfig) ConfigureZeroLog(name, version string) {
 	log.Logger = zerolog.New(mw).With().Timestamp().Caller().
 		Str("hostname", hostname).Str("service", name).Str("version", version).Logger()
 	zerolog.TimeFieldFormat = time.RFC3339Nano
+	zerolog.TimestampFunc = time.Now().UTC
 }
 
 // InitializeZeroLogTestLogger is a function that sets up a logger for testing purposes.
